@@ -1,6 +1,6 @@
 package com.grunka.random.fortuna;
 
-class Counter {
+final class Counter {
     private final byte[] state;
 
     Counter(int bits) {

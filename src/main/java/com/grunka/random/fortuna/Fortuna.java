@@ -1,6 +1,6 @@
 package com.grunka.random.fortuna;
 
-import com.grunka.random.fortuna.accumulator.Accumulator;
+import com.grunka.random.fortuna.accumulator.ScheduledAccumulator;
 import com.grunka.random.fortuna.entropy.BufferPoolEntropySource;
 import com.grunka.random.fortuna.entropy.FreeMemoryEntropySource;
 import com.grunka.random.fortuna.entropy.GarbageCollectorEntropySource;
@@ -19,11 +19,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Fortuna extends Random {
-    private static final int MIN_POOL_SIZE = 64;
-    private static final int[] POWERS_OF_TWO = initializePowersOfTwo();
-    private static final int RANDOM_DATA_CHUNK_SIZE = 128 * 1024;
+public final class Fortuna extends Random {
+    static final int MIN_POOL_SIZE = 64;
+    static final int[] POWERS_OF_TWO = initializePowersOfTwo();
+    static final int RANDOM_DATA_CHUNK_SIZE = 128 * 1024;
 
     private static int[] initializePowersOfTwo() {
         int[] result = new int[32];
@@ -36,8 +37,10 @@ public class Fortuna extends Random {
     private long lastReseedTime = 0;
     private long reseedCount = 0;
     private final RandomDataBuffer randomDataBuffer;
+    private final ReentrantLock randomDataBufferLock = new ReentrantLock();
+
     private final Generator generator;
-    private final Accumulator accumulator;
+    private final ScheduledAccumulator accumulator;
     private final ScheduledExecutorService scheduler;
     private final boolean createdScheduler;
     private final PrefetchingSupplier<byte[]> randomDataPrefetcher;
@@ -83,12 +86,12 @@ public class Fortuna extends Random {
         this.scheduler = scheduler;
     }
 
-    private static Accumulator createAccumulator(ScheduledExecutorService scheduler) {
+    private static ScheduledAccumulator createAccumulator(ScheduledExecutorService scheduler) {
         Pool[] pools = new Pool[32];
         for (int pool = 0; pool < pools.length; pool++) {
-            pools[pool] = new Pool();
+            pools[pool] = new LockPool();
         }
-        Accumulator accumulator = new Accumulator(pools, scheduler);
+        var accumulator = new ScheduledAccumulator(pools, scheduler);
         accumulator.addSource(new SchedulingEntropySource());
         accumulator.addSource(new GarbageCollectorEntropySource());
         accumulator.addSource(new LoadAverageEntropySource());
@@ -135,7 +138,12 @@ public class Fortuna extends Random {
 
     @Override
     protected int next(int bits) {
-        return randomDataBuffer.next(bits, randomDataPrefetcher);
+        randomDataBufferLock.lock();
+        try {
+            return randomDataBuffer.next(bits, randomDataPrefetcher);
+        } finally {
+            randomDataBufferLock.unlock();
+        }
     }
 
     @Override

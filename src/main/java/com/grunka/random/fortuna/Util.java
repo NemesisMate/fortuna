@@ -1,6 +1,6 @@
 package com.grunka.random.fortuna;
 
-public class Util {
+public final class Util {
     public static byte[] twoLeastSignificantBytes(long value) {
         byte[] result = new byte[2];
         result[0] = (byte) (value & 0xff);

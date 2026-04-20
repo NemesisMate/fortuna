@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
-class PrefetchingSupplier<T> implements Supplier<T> {
+final class PrefetchingSupplier<T> implements Supplier<T> {
     private final ReentrantLock lock = new ReentrantLock();
     private final Supplier<T> delegate;
     private final ExecutorService executorService;

@@ -1,21 +1,22 @@
 package com.grunka.random.fortuna.entropy;
 
 import com.grunka.random.fortuna.Util;
-import com.grunka.random.fortuna.accumulator.EntropySource;
 import com.grunka.random.fortuna.accumulator.EventAdder;
-import com.grunka.random.fortuna.accumulator.EventScheduler;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
-public class ThreadTimeEntropySource implements EntropySource {
+public final class ThreadTimeEntropySource extends AbstractEntropySource {
 
     private final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
-    @Override
-    public void schedule(EventScheduler scheduler) {
-        scheduler.schedule(100, TimeUnit.MILLISECONDS);
+    public ThreadTimeEntropySource() {
+        this(Duration.ofMillis(100));
+    }
+
+    public ThreadTimeEntropySource(Duration refreshRate) {
+        super(refreshRate);
     }
 
     @Override

@@ -1,16 +1,18 @@
 package com.grunka.random.fortuna.entropy;
 
 import com.grunka.random.fortuna.Util;
-import com.grunka.random.fortuna.accumulator.EntropySource;
 import com.grunka.random.fortuna.accumulator.EventAdder;
-import com.grunka.random.fortuna.accumulator.EventScheduler;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
-public class FreeMemoryEntropySource implements EntropySource {
-    @Override
-    public void schedule(EventScheduler scheduler) {
-        scheduler.schedule(100, TimeUnit.MILLISECONDS);
+public final class FreeMemoryEntropySource extends AbstractEntropySource {
+
+    public FreeMemoryEntropySource() {
+        this(Duration.ofMillis(100));
+    }
+
+    public FreeMemoryEntropySource(Duration refreshRate) {
+        super(refreshRate);
     }
 
     @Override

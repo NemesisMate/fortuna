@@ -2,7 +2,7 @@ package com.grunka.random.fortuna;
 
 import com.grunka.encryption.rijndael.Rijndael;
 
-class Encryption {
+final class Encryption {
     private final Rijndael rijndael = new Rijndael();
 
     void setKey(byte[] key) {

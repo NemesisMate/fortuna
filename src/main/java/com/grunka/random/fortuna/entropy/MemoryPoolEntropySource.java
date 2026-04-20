@@ -1,21 +1,22 @@
 package com.grunka.random.fortuna.entropy;
 
 import com.grunka.random.fortuna.Util;
-import com.grunka.random.fortuna.accumulator.EntropySource;
 import com.grunka.random.fortuna.accumulator.EventAdder;
-import com.grunka.random.fortuna.accumulator.EventScheduler;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryUsage;
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class MemoryPoolEntropySource implements EntropySource {
+public final class MemoryPoolEntropySource extends AbstractEntropySource {
 
-    @Override
-    public void schedule(EventScheduler scheduler) {
-        scheduler.schedule(5, TimeUnit.SECONDS);
+    public MemoryPoolEntropySource() {
+        this(Duration.ofSeconds(5));
+    }
+
+    public MemoryPoolEntropySource(Duration refreshRate) {
+        super(refreshRate);
     }
 
     @Override

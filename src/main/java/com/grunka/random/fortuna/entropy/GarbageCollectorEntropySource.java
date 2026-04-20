@@ -1,21 +1,22 @@
 package com.grunka.random.fortuna.entropy;
 
 import com.grunka.random.fortuna.Util;
-import com.grunka.random.fortuna.accumulator.EntropySource;
 import com.grunka.random.fortuna.accumulator.EventAdder;
-import com.grunka.random.fortuna.accumulator.EventScheduler;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class GarbageCollectorEntropySource implements EntropySource {
+public final class GarbageCollectorEntropySource extends AbstractEntropySource {
     private final List<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
 
-    @Override
-    public void schedule(EventScheduler scheduler) {
-        scheduler.schedule(10, TimeUnit.SECONDS);
+    public GarbageCollectorEntropySource() {
+        this(Duration.ofSeconds(10));
+    }
+
+    public GarbageCollectorEntropySource(Duration refreshRate) {
+        super(refreshRate);
     }
 
     @Override

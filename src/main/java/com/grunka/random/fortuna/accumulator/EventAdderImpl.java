@@ -2,7 +2,7 @@ package com.grunka.random.fortuna.accumulator;
 
 import com.grunka.random.fortuna.Pool;
 
-class EventAdderImpl implements EventAdder {
+final class EventAdderImpl implements EventAdder {
     private int pool;
     private final int sourceId;
     private final Pool[] pools;

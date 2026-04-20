@@ -1,19 +1,20 @@
 package com.grunka.random.fortuna.entropy;
 
-import com.grunka.random.fortuna.accumulator.EntropySource;
 import com.grunka.random.fortuna.accumulator.EventAdder;
-import com.grunka.random.fortuna.accumulator.EventScheduler;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
-public class URandomEntropySource implements EntropySource {
+public final class URandomEntropySource extends AbstractEntropySource {
     private final byte[] bytes = new byte[32];
 
-    @Override
-    public void schedule(EventScheduler scheduler) {
-        scheduler.schedule(100, TimeUnit.MILLISECONDS);
+    public URandomEntropySource() {
+        this(Duration.ofMillis(100));
+    }
+
+    public URandomEntropySource(Duration refreshRate) {
+        super(refreshRate);
     }
 
     @Override

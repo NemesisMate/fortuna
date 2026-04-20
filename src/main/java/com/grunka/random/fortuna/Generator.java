@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-class Generator {
+final class Generator {
     private static final int KEY_LENGTH = 32;
     private static final int BLOCK_LENGTH = 16;
     private final Counter counter;

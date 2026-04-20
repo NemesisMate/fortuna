@@ -1,7 +1,9 @@
 package com.grunka.random.fortuna.accumulator;
 
+import java.time.Duration;
+
 public interface EntropySource {
-    void schedule(EventScheduler scheduler);
+    Duration getRefreshRate();
 
     void event(EventAdder adder);
 }
